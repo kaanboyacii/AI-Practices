@@ -1,0 +1,48 @@
+Job Title:  Opportunity For Azure Devops Architect For Hyderabad Location
+Job Experience Required: 9 - 14 yrs
+Key Skills:  TFS| Azure| Git| VSTS| Docker| DynaTrace| Splunk| AWS
+Role Category: Programming & Design
+Location: Hyderabad
+Functional Area: IT Software - Application Programming , Maintenance
+Industry: IT-Software, Software Services
+Role: Technical Architect
+Longitude: 78.4740613
+Latitude: 17.360589
+sal: 3914
+---
+Job Title:  DevOps Engineer Intern
+Job Experience Required: 0 - 1 yrs
+Key Skills:  Intern| Linux| Windows| Unix| DNS| C++| Perl| IIS| Redhat| HTTP
+Role Category: Programming & Design
+Location: Hyderabad
+Functional Area: IT Software - Application Programming , Maintenance
+Industry: IT-Software, Software Services
+Role: Software Developer
+Longitude: 78.4740613
+Latitude: 17.360589
+sal: 5179
+---
+Job Title:  Hiring ll Azure Devops and Management Lead ll Hyderabad
+Job Experience Required: 6 - 11 yrs
+Key Skills:  C#| Azure| Powershell| Script Writing| API| Debugging| Devops| Application Integration
+Role Category: Programming & Design
+Location: Hyderabad
+Functional Area: IT Software - Application Programming , Maintenance
+Industry: IT-Software, Software Services
+Role: Team Lead/Technical Lead
+Longitude: 78.4740613
+Latitude: 17.360589
+sal: 2275
+---
+Job Title:  Devops Engineer - Tools & Automation
+Job Experience Required: 5 - 8 yrs
+Key Skills:  python| open source| database| Automation| java| linux| perl| Monitoring| nosql
+Role Category: Programming & Design
+Location: Navi Mumbai
+Functional Area: IT Software - Application Programming , Maintenance
+Industry: IT-Software, Software Services
+Role: Software Developer
+Longitude: 73.0198537
+Latitude: 19.0308262
+sal: 4127
+---
