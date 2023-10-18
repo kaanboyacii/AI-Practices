@@ -4,31 +4,6 @@ import pdfjs from 'pdfjs-dist';
 
 const dosyaYolu = './data/udemy_courses.csv';
 const cvDosyaYolu = './data/cv.pdf';
-
-export const readPDF = async (req, res) => {
-  try {
-    const dataBuffer = fs.readFileSync(cvDosyaYolu);
-    const data = new Uint8Array(dataBuffer);
-
-    const loadingTask = pdfjs.getDocument(data);
-    const pdfDocument = await loadingTask.promise;
-    const numPages = pdfDocument.numPages;
-    let pdfText = '';
-
-    for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-      const pdfPage = await pdfDocument.getPage(pageNum);
-      const textContent = await pdfPage.getTextContent();
-      pdfText += textContent.items.map((item) => item.str).join(' ');
-    }
-    
-    // Metin verisini HTTP yanıtı olarak dön
-    res.send({ pdfText });
-
-  } catch (error) {
-    console.error('PDF okuma hatası:', error);
-    res.status(500).json({ error: 'PDF okuma hatası' });
-  }
-};
 export const getCoursesByWord = (req, res, next) => {
   try {
     const { word } = req.params;
@@ -68,3 +43,61 @@ export const getCoursesByWord = (req, res, next) => {
     res.status(500).json({ error: 'Bir hata oluştu' });
   }
 };
+
+export const readPDF = async (req, res) => {
+  try {
+    const dataBuffer = fs.readFileSync(cvDosyaYolu);
+    const data = new Uint8Array(dataBuffer);
+
+    const loadingTask = pdfjs.getDocument(data);
+    const pdfDocument = await loadingTask.promise;
+    const numPages = pdfDocument.numPages;
+    let pdfText = '';
+
+    for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+      const pdfPage = await pdfDocument.getPage(pageNum);
+      const textContent = await pdfPage.getTextContent();
+      pdfText += textContent.items.map((item) => item.str).join(' ');
+    }
+
+    const skills = extractSkills(pdfText);
+    res.json({ fullText: pdfText, skills });
+
+  } catch (error) {
+    console.error('PDF okuma hatası:', error);
+    res.status(500).json({ error: 'PDF okuma hatası' });
+  }
+};
+
+
+export const extractSkills = (pdfText) => {
+  const skillsIndex = pdfText.toLowerCase().indexOf("skills");
+  const programmingIndex = pdfText.toLowerCase().indexOf("programming");
+
+  if (skillsIndex !== -1 && programmingIndex !== -1) {
+    // "Skills" ve "Programming" başlıkları arasındaki metni al
+    const skillsText = pdfText.slice(skillsIndex, programmingIndex);
+    // Metni satırlara bölmek
+    const lines = skillsText.split('\n');
+    // Becerileri saklamak için bir dizi oluştur
+    const skills = [];
+    // Her satırı gezin ve becerileri çıkar
+    for (let line of lines) {
+      // Her satırı boşluklara göre ayırarak kelimeleri elde et
+      const words = line.split(' ');
+      // Boşlukları temizle
+      const cleanedWords = words.map((word) => word.trim());
+      // Boş olan kelimeleri veya işareti içeren kelimeleri filtrele
+      const validWords = cleanedWords.filter((word) => word !== '');
+      // Eğer bu satırda geçerli kelimeler varsa, beceri olarak kabul et
+      if (validWords.length > 0) {
+        skills.push(validWords.join(' '));
+      }
+    }
+
+    return skills;
+  } else {
+    return [];
+  }
+};
+
