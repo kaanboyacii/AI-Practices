@@ -4,6 +4,7 @@ import pdfjs from 'pdfjs-dist';
 
 const dosyaYolu = './data/udemy_courses.csv';
 const cvDosyaYolu = './data/cv.pdf';
+
 export const getCoursesByWord = (req, res, next) => {
   try {
     const { word } = req.params;
@@ -69,7 +70,6 @@ export const readPDF = async (req, res) => {
   }
 };
 
-
 export const extractSkills = (pdfText) => {
   const skillsIndex = pdfText.toLowerCase().indexOf("skills");
   const programmingIndex = pdfText.toLowerCase().indexOf("programming");
@@ -99,5 +99,32 @@ export const extractSkills = (pdfText) => {
   } else {
     return [];
   }
+};
+
+export const loadUdemyCourses = (req, res) => {
+  return new Promise((resolve, reject) => {
+    const udemyCourses = [];
+    fs.createReadStream(dosyaYolu)
+      .pipe(csvParser())
+      .on('data', (row) => {
+        udemyCourses.push({
+          course_id: row['course_id'],
+          course_title: row['course_title'],
+          url: row['url'],
+          is_paid: row['is_paid'],
+          price: row['price'],
+          num_subscribers: row['num_subscribers'],
+          num_reviews: row['num_reviews'],
+          num_lectures: row['num_lectures'],
+          level: row['level'],
+          content_duration: row['content_duration'],
+          published_timestamp: row['published_timestamp'],
+          subject: row['subject'],
+        });
+      })
+      .on('end', () => {
+        res.json({ courses: udemyCourses });
+      });
+  });
 };
 
