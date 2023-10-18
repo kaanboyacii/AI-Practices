@@ -1,5 +1,5 @@
 import express from "express";
-import { loadUdemyCourses, getCoursesByWord, readPDF } from "../controllers/course.js";
+import { loadUdemyCourses, getCoursesByWord, readPDF, findCoursesBySkills } from "../controllers/course.js";
 
 const router = express.Router();
 
@@ -7,5 +7,6 @@ const router = express.Router();
 router.get("/coursesByWord/:word", getCoursesByWord);
 router.get("/readPdf", readPDF);
 router.get("/loadUdemyCourses", loadUdemyCourses);
+router.get("/findCoursesBySkills", findCoursesBySkills);
 
 export default router;

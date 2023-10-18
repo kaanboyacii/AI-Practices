@@ -101,7 +101,7 @@ export const extractSkills = (pdfText) => {
   }
 };
 
-export const loadUdemyCourses = (req, res) => {
+export const loadUdemyCourses = () => {
   return new Promise((resolve, reject) => {
     const udemyCourses = [];
     fs.createReadStream(dosyaYolu)
@@ -123,8 +123,56 @@ export const loadUdemyCourses = (req, res) => {
         });
       })
       .on('end', () => {
-        res.json({ courses: udemyCourses });
+        resolve(udemyCourses);
+      })
+      .on('error', (error) => {
+        reject(error);
       });
   });
+};
+
+export const findCoursesBySkills = async (req, res) => {
+  try {
+    // Özgeçmişten beceri bilgilerini al
+    const dataBuffer = fs.readFileSync(cvDosyaYolu);
+    const data = new Uint8Array(dataBuffer);
+    const loadingTask = pdfjs.getDocument(data);
+    const pdfDocument = await loadingTask.promise;
+    const numPages = pdfDocument.numPages;
+    let pdfText = '';
+
+    for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+      const pdfPage = await pdfDocument.getPage(pageNum);
+      const textContent = await pdfPage.getTextContent();
+      pdfText += textContent.items.map((item) => item.str).join(' ');
+    }
+
+    const skills = extractSkills(pdfText);
+
+    // Kurs verilerini yükle
+    const udemyCourses = await loadUdemyCourses();
+
+    // Uygun kursları depolamak için bir dizi oluştur
+    const matchingCourses = [];
+
+    // Her bir beceri kelimesini tek tek bölerek kursları arayın
+    skills.forEach((skill) => {
+      const keywords = skill.split(' ');
+
+      keywords.forEach((keyword) => {
+        udemyCourses.forEach((course) => {
+          const courseTitle = course.course_title || '';
+          if (courseTitle.toLowerCase().includes(keyword.toLowerCase())) {
+            matchingCourses.push(course);
+          }
+        });
+      });
+    });
+
+    res.json({ courses: matchingCourses });
+  } catch (error) {
+    console.error('Hata:', error);
+    res.status(500).json({ error: 'Bir hata oluştu' });
+  }
 };
 
