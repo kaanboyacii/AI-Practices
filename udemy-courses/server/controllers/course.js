@@ -1,11 +1,37 @@
 import fs from 'fs';
 import csvParser from 'csv-parser';
+import pdfjs from 'pdfjs-dist';
 
 const dosyaYolu = './data/udemy_courses.csv';
+const cvDosyaYolu = './data/cv.pdf';
 
+export const readPDF = async (req, res) => {
+  try {
+    const dataBuffer = fs.readFileSync(cvDosyaYolu);
+    const data = new Uint8Array(dataBuffer);
+
+    const loadingTask = pdfjs.getDocument(data);
+    const pdfDocument = await loadingTask.promise;
+    const numPages = pdfDocument.numPages;
+    let pdfText = '';
+
+    for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+      const pdfPage = await pdfDocument.getPage(pageNum);
+      const textContent = await pdfPage.getTextContent();
+      pdfText += textContent.items.map((item) => item.str).join(' ');
+    }
+    
+    // Metin verisini HTTP yanıtı olarak dön
+    res.send({ pdfText });
+
+  } catch (error) {
+    console.error('PDF okuma hatası:', error);
+    res.status(500).json({ error: 'PDF okuma hatası' });
+  }
+};
 export const getCoursesByWord = (req, res, next) => {
   try {
-    const { word } = req.params; 
+    const { word } = req.params;
 
     if (!word) {
       return res.status(400).json({ error: 'Aranan kelime eksik.' });
