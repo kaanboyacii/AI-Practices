@@ -3,21 +3,41 @@
 
 <head>
     <title>MobileNet with TensorFlow.js</title>
+    <style>
+        /* Örnek bir CSS stil */
+        #predictions {
+            font-family: Arial, sans-serif;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 
 <body>
     <h1>MobileNet with TensorFlow.js</h1>
     <img id="img" src="./img/img8.jpg" alt="Your Image">
+    <div id="predictions"></div>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.1"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@1.0.0"></script>
     <script>
         const img = document.getElementById('img');
+        const predictionsDiv = document.getElementById('predictions');
+
         // MobileNet'i yükle.
         mobilenet.load().then(model => {
             // Resmi sınıflandır.
             model.classify(img).then(predictions => {
                 console.log('Predictions: ');
                 console.log(predictions);
+
+                // Tahminleri sayfada göster.
+                predictionsDiv.innerHTML = '<h2>Predictions:</h2>';
+                predictions.forEach(prediction => {
+                    const p = document.createElement('p');
+                    p.textContent = `${prediction.className}: ${Math.floor(prediction.probability * 100)}% confidence`;
+                    predictionsDiv.appendChild(p);
+                });
             });
         });
     </script>
