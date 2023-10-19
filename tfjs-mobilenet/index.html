@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>MobileNet with TensorFlow.js</title>
+</head>
+
+<body>
+    <h1>MobileNet with TensorFlow.js</h1>
+    <img id="img" src="./img/img8.jpg" alt="Your Image">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@1.0.0"></script>
+    <script>
+        const img = document.getElementById('img');
+        // MobileNet'i yükle.
+        mobilenet.load().then(model => {
+            // Resmi sınıflandır.
+            model.classify(img).then(predictions => {
+                console.log('Predictions: ');
+                console.log(predictions);
+            });
+        });
+    </script>
+</body>
+
+</html>
