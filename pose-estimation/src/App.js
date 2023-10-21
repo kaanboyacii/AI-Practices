@@ -9,6 +9,13 @@ function App() {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
 
+  const runPosetnet = async () =>{
+    const net = await posenet.load({
+      inputResolution:{width:640,height:400},
+      scale:0.5
+    })
+  }
+
   return (
     <div className="App">
       <header className="App-header">
